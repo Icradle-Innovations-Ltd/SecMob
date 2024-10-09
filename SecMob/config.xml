@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.example.secmob" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>SecMob</name>
+    <description>Secure Mobile Money Transactions Application</description>
+    <author email="dev@cordova.apache.org" href="https://cordova.apache.org">
+        Apache Cordova Team
+    </author>
+    <content src="index.html" />
+    <allow-intent href="http://*/*" />
+    <allow-intent href="https://*/*" />
+
+    <!-- Permissions -->
+    <access origin="*" /> <!-- Allow access to all domains -->
+    <preference name="android-minSdkVersion" value="21" /> <!-- Minimum SDK version -->
+    
+    <!-- Splash Screen Preferences -->
+    <preference name="SplashScreen" value="screen" />
+    <preference name="SplashScreenDelay" value="3000" />
+    <preference name="FadeSplashScreen" value="true" />
+    <preference name="FadeSplashScreenDuration" value="500" />
+    <preference name="ShowSplashScreenSpinner" value="false" />
+    <preference name="AutoHideSplashScreen" value="true" />
+
+    <!-- Configure Status Bar -->
+    <preference name="StatusBarOverlaysWebView" value="true" />
+    <preference name="StatusBarBackgroundColor" value="#000000" />
+
+    <!-- Add the Fingerprint AIO plugin -->
+    <plugin name="cordova-plugin-fingerprint-aio" spec="^5.0.0" />
+
+    <!-- Splash screen images for various screen sizes -->
+    <platform name="android">
+        <!-- You should replace the paths below with actual splash screen images -->
+        <splash src="res/screen/android/splash-land-hdpi.png" density="land-hdpi"/>
+        <splash src="res/screen/android/splash-land-mdpi.png" density="land-mdpi"/>
+        <splash src="res/screen/android/splash-land-xhdpi.png" density="land-xhdpi"/>
+        <splash src="res/screen/android/splash-land-xxhdpi.png" density="land-xxhdpi"/>
+        <splash src="res/screen/android/splash-land-xxxhdpi.png" density="land-xxxhdpi"/>
+    </platform>
+
+    <!-- Add any additional configurations specific to your app here -->
+</widget>

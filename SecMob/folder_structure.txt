@@ -1,0 +1,494 @@
+|   |   \---promisify
+|   |   \---node-pre-gyp
+|   |       |   \---workflows
+|   |       |   \---util
+|   |       |       \---nw-pre-gyp
+|   |       \---node_modules
+|   |           |   \---lib
+|   |           |   \---lib
+|   |           \---strip-ansi
+|   |   \---nerror
+|   |       \---lib
+|   |   |   \---out
+|   |   |       \---utils
+|   |   |   \---out
+|   |   |       \---types
+|   |   \---fs.walk
+|   |       \---out
+|   |           \---types
+|   |   |   \---lib
+|   |   |       |   \---file-url-to-path
+|   |   |       \---rm
+|   |   \---move-file
+|   |   |   \---src
+|   |   |       \---classes
+|   |   |   |   \---personalization_specs
+|   |   |   \---helpers
+|   |   \---mail
+|   |       \---src
+|   |           \---classes
+|   |   \---once
+|   |       \---dist
+|   |   \---xmldom
+|   |       \---lib
+|   |   \---lib
+|   |   |   \---src
+|   |   \---src
+|   |   \---lib
+|   |   \---tests
+|   |   |   \---progress
+|   |   \---lib
+|   |   \---lib
+|   |   \---lib
+|   |   |   \---node
+|   |   \---lib
+|   |       |   \---classes
+|   |       \---platform
+|   |           |   \---classes
+|   |           \---node
+|   |               \---classes
+|   |   \---.github
+|   |   |   \---workflows
+|   |   |   \---binding
+|   |   |       \---napi-v3
+|   |   |   \---node-addon-api
+|   |   |       \---tools
+|   |   \---test
+|   |   \---test
+|   |   \---lib
+|   |   \---lib
+|   |       \---util
+|   |   \---lib
+|   |   \---test
+|   |   |   |   \---wrapper
+|   |   |   \---src
+|   |   |       \---org
+|   |   |           \---apache
+|   |   |               \---cordova
+|   |   |                   \---engine
+|   |   |   \---env
+|   |   |   |   \---lib
+|   |   |   \---project
+|   |   |       |   \---www
+|   |   |       |       \---js
+|   |   |       |   \---xml
+|   |   |       \---tools
+|   |   \---types
+|   |   \---src
+|   |       \---util
+|   |   |   \---windows
+|   |   \---www
+|   |   |   \---util
+|   |   \---node_modules
+|   |       |   \---test
+|   |       \---which
+|   |           \---bin
+|   |   \---src
+|   |   \---dist
+|   |   \---lib
+|   |   \---dist
+|   |   \---lib
+|   |   \---test
+|   |   \---lib
+|   |   |   \---parsers
+|   |   \---tests
+|   |       \---data
+|   |   \---es2015
+|   |   \---test
+|   |   |   \---dedent
+|   |   |       \---dist
+|   |   \---src
+|   |   \---test
+|   |   \---lib
+|   |   \---test
+|   |   \---out
+|   |       |   \---transformers
+|   |       \---utils
+|   |   |   \---workflows
+|   |   \---test
+|   |   \---test
+|   |   \---lib
+|   |   \---lib
+|   |       \---util
+|   |   \---node_modules
+|   |       \---strip-ansi
+|   |   \---test
+|   |   \---dist
+|   |   \---dist
+|   |   \---build
+|   |       \---src
+|   |   |   \---inspectionProfiles
+|   |   |   \---tables
+|   |   \---lib
+|   |   |   \---v6
+|   |   \---src
+|   |       \---v6
+|   |   \---dist
+|   |       \---mjs
+|   |   \---test
+|   |   \---fp
+|   |   \---node_modules
+|   |       \---semver
+|   |           \---bin
+|   |   \---lib
+|   |       \---cache
+|   |   \---test
+|   |   \---lib
+|   |   \---test
+|   |   \---lib
+|   |   \---lib
+|   |   \---tools
+|   |   \---lib
+|   |   |   \---workflows
+|   |   |   |   \---workflows
+|   |   |   |   \---win
+|   |   |   |   \---gyp
+|   |   |   |       \---generator
+|   |   |   \---tools
+|   |   |       |   \---testdata
+|   |   |       \---Xcode
+|   |   |           \---Specifications
+|   |   |   |   \---test
+|   |   |   |   \---lib
+|   |   |   \---which
+|   |   |       \---bin
+|   |   \---test
+|   |       \---fixtures
+|   |           \---nodedir
+|   |               \---include
+|   |                   \---node
+|   |   \---lib
+|   |       \---xoauth2
+|   |   \---lib
+|   |   \---lib
+|   |   \---lib
+|   |   |   \---workflows
+|   |   |   \---browser
+|   |   \---lib
+|   |   \---test
+|   |   \---test
+|   |   \---.github
+|   |   \---test
+|   |   \---lib
+|   |       \---internal
+|   |           \---streams
+|   |   \---test
+|   |       \---fixtures
+|   |   \---test
+|   |       \---integration
+|   |   \---benchmarks
+|   |   \---lib
+|   |   \---ranges
+|   |   \---test
+|   |   \---.github
+|   |       \---workflows
+|   |   \---typings
+|   |   |   \---common
+|   |   |   \---examples
+|   |   |       \---typescript
+|   |   \---typings
+|   |       \---common
+|   |   \---dist
+|   |   \---src
+|   |   |   \---Release
+|   |   \---src
+|   |   \---commonjs
+|   |   \---node_modules
+|   |       \---strip-ansi
+|   |   \---lib
+|   |   \---node_modules
+|   |       \---minipass
+|   |   |   \---chownr
+|   |   \---test
+|   |       \---fixtures
+|   |           |   \---a
+|   |           |   \---sub-files
+|   |           \---e
+|   |               \---directory
+|   |   \---lib
+|   |   |   \---__root__
+|   |   \---test
+|   |   \---test
+|   |   \---lib
+|   |   \---lib
+|   |   \---lib
+|   |   |   \---basic
+|   |   \---typings
+|   \---yallist
+|   \---android
+|       |   |   \---vcsMetadata
+|       |   |   \---vcsMetadata
+|       |   \---vcs-1
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---out
+|       |   |   |   |   |   \---debug
+|       |   |   |   |   \---resValues
+|       |   |   |   |       \---debug
+|       |   |   |   \---source
+|       |   |   |       \---buildConfig
+|       |   |   |           \---debug
+|       |   |   |               \---com
+|       |   |   |                   \---example
+|       |   |   |                       \---secmob
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---checkDebugAarMetadata
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---javaPreCompileDebug
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---createDebugApkListingFileRedirect
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---writeDebugAppMetadata
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---mergeDebugAssets
+|       |   |   |   |           \---www
+|       |   |   |   |               \---plugins
+|       |   |   |   |                   \---cordova-plugin-splashscreen
+|       |   |   |   |                       \---www
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---createDebugCompatibleScreenManifests
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---processDebugResources
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---compressDebugAssets
+|       |   |   |   |           \---out
+|       |   |   |   |               \---assets
+|       |   |   |   |                   \---www
+|       |   |   |   |                       \---plugins
+|       |   |   |   |                           \---cordova-plugin-splashscreen
+|       |   |   |   |                               \---www
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---mergeDebugResources
+|       |   |   |   |           \---out
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---packageDebugResources
+|       |   |   |   |           \---out
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---dexBuilderDebug
+|       |   |   |   |           \---out
+|       |   |   |   |               |   \---jar_49b87a89cc6e5be4e7bc444bea7dbae51500417ef23d65d58d752fb5298571ed_bucket_3
+|       |   |   |   |               \---otherProjects
+|       |   |   |   |   \---debug
+|       |   |   |   |       |   \---9
+|       |   |   |   |       \---mergeProjectDexDebug
+|       |   |   |   |           \---9
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---dexBuilderDebug
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---dexBuilderDebug
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---checkDebugDuplicateClasses
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---desugarDebugFileDependencies
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---dexBuilderDebug
+|       |   |   |   |           \---out
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---dexBuilderDebug
+|       |   |   |   |           \---out
+|       |   |   |   |   |   |   |   \---values-zu
+|       |   |   |   |   |   |   \---stripped.dir
+|       |   |   |   |   |   \---packageDebugResources
+|       |   |   |   |   |       |   \---values
+|       |   |   |   |   |       \---stripped.dir
+|       |   |   |   |   |   \---zip-cache
+|       |   |   |   |   \---packageDebug
+|       |   |   |   |       \---tmp
+|       |   |   |   |           \---debug
+|       |   |   |   |               \---zip-cache
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---compileDebugJavaWithJavac
+|       |   |   |   |           \---classes
+|       |   |   |   |               |   \---example
+|       |   |   |   |               |       \---secmob
+|       |   |   |   |               \---org
+|       |   |   |   |                   \---apache
+|       |   |   |   |                       \---cordova
+|       |   |   |   |                           \---splashscreen
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---parseDebugLocalResources
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---processDebugMainManifest
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---mergeDebugJavaResource
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---mergeDebugJniLibFolders
+|       |   |   |   |           \---out
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---processDebugMainManifest
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---processDebugManifest
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---mergeDebugResources
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---mergeDebugResources
+|       |   |   |   |           \---out
+|       |   |   |   |               \---single
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---mergeDebugShaders
+|       |   |   |   |           \---out
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---dexBuilderDebug
+|       |   |   |   |           \---out
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---extractDeepLinksDebug
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---generateDebugResources
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---processDebugManifestForPackage
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---packageDebugResources
+|       |   |   |   |           \---xml
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---processDebugResources
+|       |   |   |   |           \---out
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---dexBuilderDebug
+|       |   |   |   |           \---out
+|       |   |   |   |               |   \---example
+|       |   |   |   |               |       \---secmob
+|       |   |   |   |               \---org
+|       |   |   |   |                   \---apache
+|       |   |   |   |                       \---cordova
+|       |   |   |   |                           \---splashscreen
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---processDebugResources
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---writeDebugSigningConfigVersions
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---mapDebugSourceSetPaths
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---processDebugResources
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---dexBuilderDebug
+|       |   |   |   |           \---out
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---processDebugResources
+|       |   |   |   \---validate_signing_config
+|       |   |   |       \---debug
+|       |   |   |           \---validateSigningDebug
+|       |   |   |   |   \---debug
+|       |   |   |   \---logs
+|       |   |   \---tmp
+|       |   |       \---compileDebugJavaWithJavac
+|       |   |           \---compileTransaction
+|       |   |               \---stash-dir
+|       |   \---src
+|       |       \---main
+|       |           |   \---www
+|       |           |       \---plugins
+|       |           |           \---cordova-plugin-splashscreen
+|       |           |               \---www
+|       |           |   |   \---example
+|       |           |   |       \---secmob
+|       |           |   \---org
+|       |           |       \---apache
+|       |           |           \---cordova
+|       |           |               \---splashscreen
+|       |           \---res
+|       |               \---xml
+|       |   \---lib
+|       |   |   |   \---e4258f53d77fef4eca5c7b70360e6e0e
+|       |   |   |       \---transformed
+|       |   |   |           \---bundleLibRuntimeToDirDebug
+|       |   |   |               \---org
+|       |   |   |                   \---apache
+|       |   |   |                       \---cordova
+|       |   |   |                           \---engine
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---out
+|       |   |   |   \---res
+|       |   |   |       |   \---debug
+|       |   |   |       \---resValues
+|       |   |   |           \---debug
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---processDebugManifest
+|       |   |   |   |           \---aapt
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---writeDebugAarMetadata
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---javaPreCompileDebug
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---compileDebugLibraryResources
+|       |   |   |   |           \---out
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---bundleLibCompileToJarDebug
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---generateDebugRFile
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---generateDebugRFile
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---packageDebugResources
+|       |   |   |   |           \---out
+|       |   |   |   |   |   \---packageDebugResources
+|       |   |   |   |   |       \---stripped.dir
+|       |   |   |   |   \---packageDebugAssets
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---compileDebugJavaWithJavac
+|       |   |   |   |           \---classes
+|       |   |   |   |               \---org
+|       |   |   |   |                   \---apache
+|       |   |   |   |                       \---cordova
+|       |   |   |   |                           \---engine
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---processDebugJavaRes
+|       |   |   |   |           \---out
+|       |   |   |   |               \---org
+|       |   |   |   |                   \---apache
+|       |   |   |   |                       \---cordova
+|       |   |   |   |                           \---engine
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---packageDebugAssets
+|       |   |   |   |           \---out
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---copyDebugJniLibsProjectOnly
+|       |   |   |   |           \---jni
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---parseDebugLocalResources
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---processDebugManifest
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---mergeDebugJniLibFolders
+|       |   |   |   |           \---out
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---processDebugManifest
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---mergeDebugShaders
+|       |   |   |   |           \---out
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---extractDeepLinksDebug
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---generateDebugResources
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---packageDebugResources
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---packageDebugResources
+|       |   |   |   |   \---debug
+|       |   |   |   |       \---bundleLibRuntimeToDirDebug
+|       |   |   |   |           \---org
+|       |   |   |   |               \---apache
+|       |   |   |   |                   \---cordova
+|       |   |   |   |                       \---engine
+|       |   |   |   \---symbol_list_with_package_name
+|       |   |   |       \---debug
+|       |   |   |           \---generateDebugRFile
+|       |   |   |   \---logs
+|       |   |   \---tmp
+|       |   |       \---compileDebugJavaWithJavac
+|       |   \---src
+|       |       \---org
+|       |           \---apache
+|       |               \---cordova
+|       |                   \---engine
+|       |   \---plugins
+|       |       \---cordova-plugin-splashscreen
+|       |           \---www
+|       \---tools
+|           |   |   \---vcsMetadata
+|           |   \---vcs-1
+|           \---gradle
+|               \---wrapper
+|   \---cordova-plugin-splashscreen
+|       |   \---windows
+|       \---www
+\---www
+    \---js

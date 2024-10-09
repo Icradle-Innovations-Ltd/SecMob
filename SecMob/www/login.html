@@ -1,0 +1,65 @@
+<!-- www/login.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Secure Mobile Money Services</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Login</h2>
+        <form id="loginForm">
+            <div class="mb-3">
+                <label for="loginPhoneNumber" class="form-label">Mobile Money Phone Number</label>
+                <input type="text" class="form-control" id="loginPhoneNumber" placeholder="e.g., 0771234567" required>
+            </div>
+            <div class="mb-3">
+                <label for="loginEmail" class="form-label">Email Address</label>
+                <input type="email" class="form-control" id="loginEmail" placeholder="e.g., user@example.com" required>
+            </div>
+            <button type="submit" class="btn btn-success">Send Verification Code</button>
+            <a href="index.html" class="btn btn-secondary">Cancel</a>
+        </form>
+
+        <!-- Verification Code Modal -->
+        <div class="modal fade" id="verificationModal" tabindex="-1" aria-labelledby="verificationModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form id="verificationForm">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="verificationModalLabel">Enter Verification Code</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>A verification code has been sent to your email. Please enter it below:</p>
+                            <input type="text" class="form-control" id="verificationCode" maxlength="6" required>
+                            <div class="form-check mt-3">
+                                <input class="form-check-input" type="checkbox" id="rememberMe">
+                                <label class="form-check-label" for="rememberMe">
+                                    Remember me
+                                </label>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Verify</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle (includes Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Cordova JS -->
+    <script src="cordova.js"></script>
+    <!-- Custom JS -->
+    <script src="js/scripts.js"></script>
+</body>
+</html>
