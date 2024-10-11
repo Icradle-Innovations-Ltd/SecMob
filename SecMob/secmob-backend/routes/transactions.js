@@ -1,12 +1,17 @@
 // routes/transactions.js
 
-const express = require('express');
-const jwt = require('jsonwebtoken');
-const db = require('../database');
-const router = express.Router();
+import express from 'express';
+import jwt from 'jsonwebtoken';
+import User from '../models/User.js'; // Ensure .js extension
+import Transaction from '../models/Transaction.js'; // Ensure .js extension
+import dotenv from 'dotenv';
 
-// Load environment variables
+dotenv.config();
+
+// JWT Secret
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret_key';
+
+const router = express.Router();
 
 /**
  * Middleware to authenticate JWT tokens
@@ -32,34 +37,31 @@ function authenticateToken(req, res, next) {
 }
 
 /**
- * Route: GET /api/transactions/check-balance
- * Description: Retrieves the current balance of the authenticated user.
+ * @route   GET /api/transactions/check-balance
+ * @desc    Retrieves the current balance of the authenticated user.
+ * @access  Private
  */
-router.get('/check-balance', authenticateToken, (req, res) => {
-    const userId = req.user.id;
-
-    const query = `SELECT balance FROM users WHERE id = ?`;
-    db.get(query, [userId], (err, row) => {
-        if (err) {
-            console.error('Error fetching balance:', err.message);
-            return res.status(500).json({ success: false, message: 'Internal server error.' });
-        }
-
-        if (!row) {
+router.get('/check-balance', authenticateToken, async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id).select('balance');
+        if (!user) {
             return res.status(404).json({ success: false, message: 'User not found.' });
         }
 
-        res.json({ success: true, balance: row.balance });
-    });
+        res.json({ success: true, balance: user.balance });
+    } catch (err) {
+        console.error('Error in /check-balance:', err.message);
+        res.status(500).json({ success: false, message: 'Server error.' });
+    }
 });
 
 /**
- * Route: POST /api/transactions/deposit
- * Description: Allows the authenticated user to deposit funds into their account.
- * Body Parameters:
- * - amount: Number (required)
+ * @route   POST /api/transactions/deposit
+ * @desc    Allows the authenticated user to deposit funds into their account.
+ * @access  Private
+ * @body    { amount: Number }
  */
-router.post('/deposit', authenticateToken, (req, res) => {
+router.post('/deposit', authenticateToken, async (req, res) => {
     const userId = req.user.id;
     const { amount } = req.body;
 
@@ -68,213 +70,189 @@ router.post('/deposit', authenticateToken, (req, res) => {
         return res.status(400).json({ success: false, message: 'Invalid deposit amount.' });
     }
 
-    // Begin transaction
-    db.serialize(() => {
+    try {
         // Update user's balance
-        const updateBalanceQuery = `UPDATE users SET balance = balance + ? WHERE id = ?`;
-        db.run(updateBalanceQuery, [amount, userId], function(err) {
-            if (err) {
-                console.error('Error updating balance:', err.message);
-                return res.status(500).json({ success: false, message: 'Failed to deposit funds.' });
-            }
+        const user = await User.findByIdAndUpdate(
+            userId,
+            { $inc: { balance: amount } },
+            { new: true }
+        ).select('balance');
 
-            // Log the transaction
-            const logTransactionQuery = `INSERT INTO transactions (user_id, amount, type) VALUES (?, ?, ?)`;
-            db.run(logTransactionQuery, [userId, amount, 'deposit'], function(err) {
-                if (err) {
-                    console.error('Error logging transaction:', err.message);
-                    return res.status(500).json({ success: false, message: 'Failed to log transaction.' });
-                }
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found.' });
+        }
 
-                res.json({ success: true, message: 'Deposit successful.', newBalance: undefined }); // You can fetch the new balance if needed
-            });
+        // Log the transaction
+        const transaction = new Transaction({
+            user: userId,
+            amount,
+            type: 'deposit',
+            counterparty: 'N/A', // For deposits, no counterparty
         });
-    });
+
+        await transaction.save();
+
+        res.json({ success: true, message: 'Deposit successful.', newBalance: user.balance });
+    } catch (err) {
+        console.error('Error in /deposit:', err.message);
+        res.status(500).json({ success: false, message: 'Server error.' });
+    }
 });
 
 /**
- * Route: POST /api/transactions/send-money
- * Description: Allows the authenticated user to send money to another user.
- * Body Parameters:
- * - recipientPhone: String (required)
- * - amount: Number (required)
+ * @route   POST /api/transactions/send-money
+ * @desc    Allows the authenticated user to send money to another user.
+ * @access  Private
+ * @body    { recipientEmail: String, amount: Number }
  */
-router.post('/send-money', authenticateToken, (req, res) => {
+router.post('/send-money', authenticateToken, async (req, res) => {
     const senderId = req.user.id;
-    const { recipientPhone, amount } = req.body;
+    const { recipientEmail, amount } = req.body;
 
     // Validate input
-    if (!recipientPhone || typeof recipientPhone !== 'string') {
-        return res.status(400).json({ success: false, message: 'Recipient phone number is required.' });
+    if (!recipientEmail || typeof recipientEmail !== 'string') {
+        return res.status(400).json({ success: false, message: 'Recipient email is required.' });
     }
     if (typeof amount !== 'number' || amount <= 0) {
-        return res.status(400).json({ success: false, message: 'Invalid amount.' });
+        return res.status(400).json({ success: false, message: 'Invalid transfer amount.' });
     }
 
-    // Start a serialized transaction
-    db.serialize(() => {
-        // Fetch sender's current balance
-        const fetchSenderBalance = `SELECT balance FROM users WHERE id = ?`;
-        db.get(fetchSenderBalance, [senderId], (err, sender) => {
-            if (err) {
-                console.error('Error fetching sender balance:', err.message);
-                return res.status(500).json({ success: false, message: 'Internal server error.' });
-            }
+    try {
+        const sender = await User.findById(senderId);
+        const recipient = await User.findOne({ email: recipientEmail });
 
-            if (!sender) {
-                return res.status(404).json({ success: false, message: 'Sender not found.' });
-            }
+        if (!recipient) {
+            return res.status(404).json({ success: false, message: 'Recipient not found.' });
+        }
 
-            if (sender.balance < amount) {
-                return res.status(400).json({ success: false, message: 'Insufficient balance.' });
-            }
+        if (sender.balance < amount) {
+            return res.status(400).json({ success: false, message: 'Insufficient balance.' });
+        }
 
-            // Fetch recipient's ID
-            const fetchRecipientId = `SELECT id FROM users WHERE phone = ?`;
-            db.get(fetchRecipientId, [recipientPhone], (err, recipient) => {
-                if (err) {
-                    console.error('Error fetching recipient:', err.message);
-                    return res.status(500).json({ success: false, message: 'Internal server error.' });
-                }
+        // Start a session for transaction
+        const session = await mongoose.startSession();
+        session.startTransaction();
 
-                if (!recipient) {
-                    return res.status(404).json({ success: false, message: 'Recipient not found.' });
-                }
+        try {
+            // Deduct amount from sender
+            sender.balance -= amount;
+            await sender.save({ session });
 
-                const recipientId = recipient.id;
+            // Add amount to recipient
+            recipient.balance += amount;
+            await recipient.save({ session });
 
-                // Deduct amount from sender
-                const deductAmount = `UPDATE users SET balance = balance - ? WHERE id = ?`;
-                db.run(deductAmount, [amount, senderId], function(err) {
-                    if (err) {
-                        console.error('Error deducting amount:', err.message);
-                        return res.status(500).json({ success: false, message: 'Failed to send money.' });
-                    }
-
-                    // Add amount to recipient
-                    const addAmount = `UPDATE users SET balance = balance + ? WHERE id = ?`;
-                    db.run(addAmount, [amount, recipientId], function(err) {
-                        if (err) {
-                            console.error('Error adding amount to recipient:', err.message);
-                            return res.status(500).json({ success: false, message: 'Failed to send money.' });
-                        }
-
-                        // Log sender's transaction
-                        const logSenderTransaction = `INSERT INTO transactions (user_id, amount, type, counterparty) VALUES (?, ?, ?, ?)`;
-                        db.run(logSenderTransaction, [senderId, amount, 'debit', recipientPhone], function(err) {
-                            if (err) {
-                                console.error('Error logging sender transaction:', err.message);
-                                return res.status(500).json({ success: false, message: 'Failed to log transaction.' });
-                            }
-
-                            // Log recipient's transaction
-                            const logRecipientTransaction = `INSERT INTO transactions (user_id, amount, type, counterparty) VALUES (?, ?, ?, ?)`;
-                            db.run(logRecipientTransaction, [recipientId, amount, 'credit', req.user.phone], function(err) {
-                                if (err) {
-                                    console.error('Error logging recipient transaction:', err.message);
-                                    // Not failing the request since money has been transferred
-                                }
-
-                                res.json({ success: true, message: 'Money sent successfully.' });
-                            });
-                        });
-                    });
-                });
+            // Create transaction records for both sender and recipient
+            const senderTransaction = new Transaction({
+                user: sender._id,
+                amount,
+                type: 'debit',
+                counterparty: recipient.email,
             });
-        });
-    });
+
+            const recipientTransaction = new Transaction({
+                user: recipient._id,
+                amount,
+                type: 'credit',
+                counterparty: sender.email,
+            });
+
+            await senderTransaction.save({ session });
+            await recipientTransaction.save({ session });
+
+            // Commit the transaction
+            await session.commitTransaction();
+            session.endSession();
+
+            res.json({ success: true, message: 'Money sent successfully.', newBalance: sender.balance });
+        } catch (err) {
+            // Abort the transaction on error
+            await session.abortTransaction();
+            session.endSession();
+            console.error('Transaction error:', err.message);
+            res.status(500).json({ success: false, message: 'Failed to send money.' });
+        }
+    } catch (err) {
+        console.error('Error in /send-money:', err.message);
+        res.status(500).json({ success: false, message: 'Server error.' });
+    }
 });
 
 /**
- * Route: POST /api/transactions/buy-airtime
- * Description: Allows the authenticated user to buy airtime.
- * Body Parameters:
- * - amount: Number (required)
+ * @route   POST /api/transactions/buy-airtime
+ * @desc    Allows the authenticated user to buy airtime.
+ * @access  Private
+ * @body    { amount: Number, provider: String }
  */
-router.post('/buy-airtime', authenticateToken, (req, res) => {
+router.post('/buy-airtime', authenticateToken, async (req, res) => {
     const userId = req.user.id;
-    const { amount } = req.body;
+    const { amount, provider } = req.body;
 
-    // Validate the airtime amount
+    // Validate airtime purchase details
     if (typeof amount !== 'number' || amount <= 0) {
         return res.status(400).json({ success: false, message: 'Invalid airtime amount.' });
     }
+    if (!provider || typeof provider !== 'string') {
+        return res.status(400).json({ success: false, message: 'Airtime provider is required.' });
+    }
 
-    // Start transaction
-    db.serialize(() => {
-        // Fetch user's current balance
-        const fetchBalance = `SELECT balance FROM users WHERE id = ?`;
-        db.get(fetchBalance, [userId], (err, user) => {
-            if (err) {
-                console.error('Error fetching user balance:', err.message);
-                return res.status(500).json({ success: false, message: 'Internal server error.' });
-            }
-
-            if (!user) {
-                return res.status(404).json({ success: false, message: 'User not found.' });
-            }
-
-            if (user.balance < amount) {
-                return res.status(400).json({ success: false, message: 'Insufficient balance.' });
-            }
-
-            // Deduct airtime amount
-            const deductAmount = `UPDATE users SET balance = balance - ? WHERE id = ?`;
-            db.run(deductAmount, [amount, userId], function(err) {
-                if (err) {
-                    console.error('Error deducting airtime amount:', err.message);
-                    return res.status(500).json({ success: false, message: 'Failed to buy airtime.' });
-                }
-
-                // Log the transaction
-                const logTransaction = `INSERT INTO transactions (user_id, amount, type) VALUES (?, ?, ?)`;
-                db.run(logTransaction, [userId, amount, 'buy_airtime'], function(err) {
-                    if (err) {
-                        console.error('Error logging airtime transaction:', err.message);
-                        return res.status(500).json({ success: false, message: 'Failed to log transaction.' });
-                    }
-
-                    res.json({ success: true, message: 'Airtime purchased successfully.', newBalance: user.balance - amount });
-                });
-            });
-        });
-    });
-});
-
-/**
- * Route: GET /api/transactions/transaction-history
- * Description: Retrieves the transaction history of the authenticated user.
- */
-router.get('/transaction-history', authenticateToken, (req, res) => {
-    const userId = req.user.id;
-
-    const query = `
-        SELECT 
-            amount, 
-            type, 
-            counterparty, 
-            createdAt 
-        FROM transactions 
-        WHERE user_id = ?
-        ORDER BY datetime(createdAt) DESC
-    `;
-    db.all(query, [userId], (err, rows) => {
-        if (err) {
-            console.error('Error fetching transaction history:', err.message);
-            return res.status(500).json({ success: false, message: 'Failed to retrieve transaction history.' });
+    try {
+        // Fetch user
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found.' });
         }
 
-        res.json({ success: true, transactions: rows });
-    });
+        if (user.balance < amount) {
+            return res.status(400).json({ success: false, message: 'Insufficient balance.' });
+        }
+
+        // Deduct amount from user's balance
+        user.balance -= amount;
+        await user.save();
+
+        // Log the transaction
+        const transaction = new Transaction({
+            user: userId,
+            amount,
+            type: 'debit',
+            counterparty: provider,
+        });
+
+        await transaction.save();
+
+        res.json({ success: true, message: 'Airtime purchased successfully.', newBalance: user.balance });
+    } catch (err) {
+        console.error('Error in /buy-airtime:', err.message);
+        res.status(500).json({ success: false, message: 'Server error.' });
+    }
 });
 
 /**
- * Route: POST /api/transactions/withdraw
- * Description: Allows the authenticated user to withdraw funds.
- * Body Parameters:
- * - amount: Number (required)
+ * @route   GET /api/transactions/transaction-history
+ * @desc    Retrieves the transaction history of the authenticated user.
+ * @access  Private
  */
-router.post('/withdraw', authenticateToken, (req, res) => {
+router.get('/transaction-history', authenticateToken, async (req, res) => {
+    const userId = req.user.id;
+
+    try {
+        const transactions = await Transaction.find({ user: userId }).sort({ createdAt: -1 });
+
+        res.json({ success: true, transactions });
+    } catch (err) {
+        console.error('Error in /transaction-history:', err.message);
+        res.status(500).json({ success: false, message: 'Server error.' });
+    }
+});
+
+/**
+ * @route   POST /api/transactions/withdraw
+ * @desc    Allows the authenticated user to withdraw funds.
+ * @access  Private
+ * @body    { amount: Number }
+ */
+router.post('/withdraw', authenticateToken, async (req, res) => {
     const userId = req.user.id;
     const { amount } = req.body;
 
@@ -283,109 +261,86 @@ router.post('/withdraw', authenticateToken, (req, res) => {
         return res.status(400).json({ success: false, message: 'Invalid withdrawal amount.' });
     }
 
-    // Start transaction
-    db.serialize(() => {
-        // Fetch user's current balance
-        const fetchBalance = `SELECT balance FROM users WHERE id = ?`;
-        db.get(fetchBalance, [userId], (err, user) => {
-            if (err) {
-                console.error('Error fetching user balance:', err.message);
-                return res.status(500).json({ success: false, message: 'Internal server error.' });
-            }
+    try {
+        // Fetch user
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found.' });
+        }
 
-            if (!user) {
-                return res.status(404).json({ success: false, message: 'User not found.' });
-            }
+        if (user.balance < amount) {
+            return res.status(400).json({ success: false, message: 'Insufficient balance.' });
+        }
 
-            if (user.balance < amount) {
-                return res.status(400).json({ success: false, message: 'Insufficient balance.' });
-            }
+        // Deduct withdrawal amount
+        user.balance -= amount;
+        await user.save();
 
-            // Deduct withdrawal amount
-            const deductAmount = `UPDATE users SET balance = balance - ? WHERE id = ?`;
-            db.run(deductAmount, [amount, userId], function(err) {
-                if (err) {
-                    console.error('Error deducting withdrawal amount:', err.message);
-                    return res.status(500).json({ success: false, message: 'Failed to withdraw funds.' });
-                }
-
-                // Log the transaction
-                const logTransaction = `INSERT INTO transactions (user_id, amount, type) VALUES (?, ?, ?)`;
-                db.run(logTransaction, [userId, amount, 'withdraw'], function(err) {
-                    if (err) {
-                        console.error('Error logging withdrawal transaction:', err.message);
-                        return res.status(500).json({ success: false, message: 'Failed to log transaction.' });
-                    }
-
-                    res.json({ success: true, message: 'Withdrawal successful.', newBalance: user.balance - amount });
-                });
-            });
+        // Log the withdrawal transaction
+        const transaction = new Transaction({
+            user: userId,
+            amount,
+            type: 'withdraw',
+            counterparty: 'N/A', // No counterparty for withdrawals
         });
-    });
+
+        await transaction.save();
+
+        res.json({ success: true, message: 'Withdrawal successful.', newBalance: user.balance });
+    } catch (err) {
+        console.error('Error in /withdraw:', err.message);
+        res.status(500).json({ success: false, message: 'Server error.' });
+    }
 });
 
 /**
- * Route: GET /api/transactions/summary
- * Description: Provides a summary of the user's transactions, including total deposits, withdrawals, and current balance.
+ * @route   GET /api/transactions/summary
+ * @desc    Provides a summary of the user's transactions, including total deposits, withdrawals, and current balance.
+ * @access  Private
  */
-router.get('/summary', authenticateToken, (req, res) => {
+router.get('/summary', authenticateToken, async (req, res) => {
     const userId = req.user.id;
 
-    const queries = {
-        balance: `SELECT balance FROM users WHERE id = ?`,
-        totalDeposits: `SELECT SUM(amount) as totalDeposits FROM transactions WHERE user_id = ? AND type = 'deposit'`,
-        totalWithdrawals: `SELECT SUM(amount) as totalWithdrawals FROM transactions WHERE user_id = ? AND type = 'withdraw'`,
-        totalSent: `SELECT SUM(amount) as totalSent FROM transactions WHERE user_id = ? AND type = 'debit'`,
-        totalReceived: `SELECT SUM(amount) as totalReceived FROM transactions WHERE user_id = ? AND type = 'credit'`
-    };
+    try {
+        const user = await User.findById(userId).select('balance');
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found.' });
+        }
 
-    db.serialize(() => {
-        db.get(queries.balance, [userId], (err, balanceRow) => {
-            if (err) {
-                console.error('Error fetching balance:', err.message);
-                return res.status(500).json({ success: false, message: 'Internal server error.' });
+        const totalDeposits = await Transaction.aggregate([
+            { $match: { user: user._id, type: 'deposit' } },
+            { $group: { _id: null, total: { $sum: '$amount' } } }
+        ]);
+
+        const totalWithdrawals = await Transaction.aggregate([
+            { $match: { user: user._id, type: 'withdraw' } },
+            { $group: { _id: null, total: { $sum: '$amount' } } }
+        ]);
+
+        const totalSent = await Transaction.aggregate([
+            { $match: { user: user._id, type: 'debit' } },
+            { $group: { _id: null, total: { $sum: '$amount' } } }
+        ]);
+
+        const totalReceived = await Transaction.aggregate([
+            { $match: { user: user._id, type: 'credit' } },
+            { $group: { _id: null, total: { $sum: '$amount' } } }
+        ]);
+
+        res.json({
+            success: true,
+            summary: {
+                balance: user.balance,
+                totalDeposits: totalDeposits[0] ? totalDeposits[0].total : 0,
+                totalWithdrawals: totalWithdrawals[0] ? totalWithdrawals[0].total : 0,
+                totalSent: totalSent[0] ? totalSent[0].total : 0,
+                totalReceived: totalReceived[0] ? totalReceived[0].total : 0
             }
-
-            db.get(queries.totalDeposits, [userId], (err, depositRow) => {
-                if (err) {
-                    console.error('Error fetching total deposits:', err.message);
-                    return res.status(500).json({ success: false, message: 'Internal server error.' });
-                }
-
-                db.get(queries.totalWithdrawals, [userId], (err, withdrawalRow) => {
-                    if (err) {
-                        console.error('Error fetching total withdrawals:', err.message);
-                        return res.status(500).json({ success: false, message: 'Internal server error.' });
-                    }
-
-                    db.get(queries.totalSent, [userId], (err, sentRow) => {
-                        if (err) {
-                            console.error('Error fetching total sent:', err.message);
-                            return res.status(500).json({ success: false, message: 'Internal server error.' });
-                        }
-
-                        db.get(queries.totalReceived, [userId], (err, receivedRow) => {
-                            if (err) {
-                                console.error('Error fetching total received:', err.message);
-                                return res.status(500).json({ success: false, message: 'Internal server error.' });
-                            }
-
-                            res.json({
-                                success: true,
-                                summary: {
-                                    balance: balanceRow.balance || 0,
-                                    totalDeposits: depositRow.totalDeposits || 0,
-                                    totalWithdrawals: withdrawalRow.totalWithdrawals || 0,
-                                    totalSent: sentRow.totalSent || 0,
-                                    totalReceived: receivedRow.totalReceived || 0
-                                }
-                            });
-                        });
-                    });
-                });
-            });
         });
-    });
+    } catch (err) {
+        console.error('Error in /summary:', err.message);
+        res.status(500).json({ success: false, message: 'Server error.' });
+    }
 });
 
-module.exports = router;
+export default router;

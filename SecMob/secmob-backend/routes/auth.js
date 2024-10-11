@@ -1,11 +1,10 @@
 // routes/auth.js
-const express = require('express');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const db = require('../database');
-const nodemailer = require('nodemailer');
-const router = express.Router();
-const { v4: uuidv4 } = require('uuid'); // For generating unique OTP IDs
+import express from 'express';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import db from '../database.js'; // Ensure this is also updated for ES modules
+import nodemailer from 'nodemailer';
+import { v4 as uuidv4 } from 'uuid'; // For generating unique OTP IDs
 
 // Load environment variables
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret_key';
@@ -34,6 +33,7 @@ function sendVerificationEmail(email, code) {
 }
 
 // User Registration
+const router = express.Router();
 router.post('/register', async (req, res) => {
     const { email, password, phone } = req.body;
 
@@ -164,4 +164,6 @@ router.post('/verify-otp', (req, res) => {
     });
 });
 
-module.exports = router;
+// Export the router as the default export
+export default router;
+

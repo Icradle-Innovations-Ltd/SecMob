@@ -657,7 +657,6 @@ function logout() {
     // Clear user session data
     localStorage.removeItem('userToken');
     localStorage.removeItem('userName');
-
     showAlert('You have been logged out successfully.', 'success');
     window.location.href = 'index.html';
 }
