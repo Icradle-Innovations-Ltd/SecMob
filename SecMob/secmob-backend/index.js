@@ -8,7 +8,7 @@ import authRoutes from './routes/auth.js'; // Ensure .js extension
 import transactionRoutes from './routes/transactions.js'; // Ensure .js extension
 
 const app = express();
-const PORT = process.env.PORT || 10000;
+const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors());
